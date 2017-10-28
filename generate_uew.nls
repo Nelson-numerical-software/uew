@@ -1,0 +1,90 @@
+//=============================================================================
+// Copyright (c) 2016-2017 Allan CORNET (Nelson)
+//=============================================================================
+// LICENCE_BLOCK_BEGIN
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// LICENCE_BLOCK_END
+//=============================================================================
+
+destination_file = 'nelson.uew';
+
+txt = {'/L20"Nelson" Comment Num = 2% Comment = // Line Comment = // File Extensions = nls nlf String Chars = '' Escape Char = …';
+'/Function String = "%[ ^t]++function*=[ ^t]++^([a-z0-9_]+^)"';
+'/Delimiters = ~!@$^&*()-+=|\/{}[]:;"''<> ,	.?';
+'/Indent Strings = "then" "else"';
+'/Indent Strings SOL = "for" "while" "function" "select" "elseif"';
+'/Unindent Strings = "end" "else" "endfunction" "elseif"';
+'';
+'/C1"commands"'};
+txt = [txt; iskeyword()];
+txt{end + 1} = '';
+txt{end + 1} = '/C2"primitives"';
+txt = [txt; what()];
+txt{end + 1} = '';
+txt{end + 1} = '/C3"macros"';
+for m = getmodules()
+  path_functions = [modulepath(m{1}), '/functions'];
+  if isdir(path_functions)
+    functions_info = dir([path_functions,'/*.nlf']);
+    for f = functions_info
+      txt{end + 1} = f.name(1:end-4);
+    end
+	end
+end
+txt{end + 1} = '';
+txt{end + 1} = '/C4"operators"';
+txt{end + 1} = '=';
+txt{end + 1} = '==';
+txt{end + 1} = '~=';
+txt{end + 1} = '&gt;';
+txt{end + 1} = '&lt;';
+txt{end + 1} = '&gt;=';
+txt{end + 1} = '&lt;=';
+txt{end + 1} = '&amp;';
+txt{end + 1} = '+';
+txt{end + 1} = '-';
+txt{end + 1} = '/';
+txt{end + 1} = './';
+txt{end + 1} = '\';
+txt{end + 1} = '.\';
+txt{end + 1} = '*';
+txt{end + 1} = '.*';
+txt{end + 1} = '^';
+txt{end + 1} = '.^';
+txt{end + 1} = '''';
+txt{end + 1} = '.''';
+txt{end + 1} = '|';
+txt{end + 1} = '~';
+txt{end + 1} = ':';
+txt{end + 1} = '';
+txt{end + 1} = '';
+txt{end + 1} = '/C5"Separators"';
+txt{end + 1} = '.';
+txt{end + 1} = ',';
+txt{end + 1} = ';';
+txt{end + 1} = ']';
+txt{end + 1} = '[';
+txt{end + 1} = '(';
+txt{end + 1} = ')';
+txt{end + 1} = '{';
+txt{end + 1} = '}';
+txt{end + 1} = '?';
+txt{end + 1} = '...';
+
+eol = char(10);
+fw = fopen(destination_file, 'wt');
+for l = txt
+  fwrite(fw, [l, eol]);
+end
+fclose(fw);
